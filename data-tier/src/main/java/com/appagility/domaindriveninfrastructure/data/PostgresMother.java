@@ -4,6 +4,7 @@ import com.appagility.domaindriveninfrastructure.aws.AwsComponent;
 import com.appagility.domaindriveninfrastructure.aws.AwsFactory;
 import com.appagility.domaindriveninfrastructure.base.Endpoint;
 import com.appagility.domaindriveninfrastructure.base.GoldenAmi;
+import com.appagility.domaindriveninfrastructure.base.Protocol;
 
 
 public  class PostgresMother {
@@ -14,7 +15,7 @@ public  class PostgresMother {
     public PostgresMother(AwsFactory cloudProviderFactory) {
 
         endpoint = cloudProviderFactory.endpointBuilder()
-                .protocol("TCP")
+                .protocol(Protocol.TCP)
                 .port(5432)
                 .build();
 

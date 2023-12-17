@@ -1,6 +1,7 @@
 package com.appagility.domaindriveninfrastructure.base;
 
 import com.appagility.Builder;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -8,11 +9,11 @@ public abstract class Tier<TComponent extends Component> {
 
     protected final String name;
 
-    private final List<Endpoint> exposes;
+    protected final List<LoadBalancedEndpoint> exposes;
 
     protected final List<TComponent> components;
 
-    public Tier(String name, List<Endpoint> exposes, List<TComponent> components) {
+    public Tier(String name, List<LoadBalancedEndpoint> exposes, List<TComponent> components) {
 
         this.name = name;
         this.exposes = exposes;
@@ -25,8 +26,17 @@ public abstract class Tier<TComponent extends Component> {
 
         TierBuilder<TComponent> name(String name);
 
-        TierBuilder<TComponent> exposes(Endpoint service);
+        TierBuilder<TComponent> exposes(LoadBalancedEndpoint loadBalancedEndpoint);
+
+        default TierBuilder<TComponent> exposes(Endpoint endpoint, int onPort) {
+
+            return exposes(new LoadBalancedEndpoint(endpoint, onPort));
+        }
 
         TierBuilder<TComponent> component(TComponent component);
+    }
+
+    public record LoadBalancedEndpoint(Endpoint target, int port) {
+
     }
 }
