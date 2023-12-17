@@ -35,9 +35,9 @@ consists of multiple `Components`.  Each `Component` `exposes` a number of `Endp
 which may be `exposed` by a load balancer, of which there are as few as possible per `Tier`.
 
 At present the `Components` in the domain are all `Instance Based`, i.e. they are
-realised a scaling group of virtual machines.
+realised by a scaling group of virtual machines.
 
-`Components` may `depend` on their own `Endpoints`, the `Endpoints` other `Components`,
+`Components` may `depend` on their own `Endpoints`, the `Endpoints` of other `Components`,
 or `Endpoints` `exposed` by the Load Balancer associated with their `Tier` or in another
 `Tier`.
 
@@ -46,7 +46,8 @@ dependent `Components`.
 
 ### AWS specifics
 
-At present this PoC is AWS only.
+At present this PoC is AWS only - although there is some abstraction which would allow
+later extension.
 
 Our domain has some AWS specific rules about the infrastructure:
 
@@ -57,6 +58,6 @@ Our domain has some AWS specific rules about the infrastructure:
       of Components which are directly dependent
     * allowing ingress from the load balancer where an `Endpoint` is exposed from the `Tier`
 
-* An ALB should be created if any of the components within the `Tier` expose an HTTP `Endpoint` 
-* An NLB should be creared if any of the component within the `Tier` expose a TCP (non-HTTP) `Endpoint`
+* An ALB should be created if any of the `Components` within the `Tier` `expose` an HTTP `Endpoint` 
+* An NLB should be creared if any of the `Components` within the `Tier` `expose` a TCP (non-HTTP) `Endpoint`
 
