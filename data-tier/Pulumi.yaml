@@ -1,0 +1,7 @@
+name: ddi-data
+
+description: Domain Driven Infrastructure - Data Tier
+
+runtime: java
+template:
+  description: "A domain driven infrastructure example - data tier"
