@@ -14,9 +14,13 @@ import com.pulumi.core.Output;
 import lombok.Builder;
 import lombok.Singular;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScalingApproach> implements AwsComponent {
+
+    private Optional<Group> group = Optional.empty();
 
     @Builder
     public AwsInstanceBasedComponent(String shortCode,
@@ -46,7 +50,12 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScaling
 
         scalingApproach.addRequirements(groupArgsBuilder);
 
-        new Group(shortCode, groupArgsBuilder.build());
+        group = Optional.of(new Group(shortCode, groupArgsBuilder.build()));
+    }
+
+    public Output<String> getTargetGroupArn() {
+
+        return group.map(g -> g.arn()).orElseThrow(() -> new RuntimeException("Invalid state, group not created"));
     }
 
     public static class AwsInstanceBasedComponentBuilder implements InstanceBasedComponentBuilder<AwsScalingApproach> {

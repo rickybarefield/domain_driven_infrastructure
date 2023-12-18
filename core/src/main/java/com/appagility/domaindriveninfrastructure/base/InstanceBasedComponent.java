@@ -12,20 +12,20 @@ public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApp
 
     protected final TScalingApproach scalingApproach;
 
-    protected final List<Endpoint> servicesExposed;
+    protected final List<Endpoint> endpointsExposed;
 
-    protected final List<Endpoint> servicesAccessed;
+    protected final List<Endpoint> endpointsAccessed;
 
     protected final StorageRequirement storageRequirements;
 
 
-    public InstanceBasedComponent(String shortCode, GoldenAmi basedOn, TScalingApproach scalingApproach, List<Endpoint> servicesExposed, List<Endpoint> servicesAccessed, StorageRequirement storageRequirements) {
+    public InstanceBasedComponent(String shortCode, GoldenAmi basedOn, TScalingApproach scalingApproach, List<Endpoint> endpointsExposed, List<Endpoint> endpointsAccessed, StorageRequirement storageRequirements) {
 
         this.shortCode = shortCode;
         this.basedOn = basedOn;
         this.scalingApproach = scalingApproach;
-        this.servicesExposed = servicesExposed;
-        this.servicesAccessed = servicesAccessed;
+        this.endpointsExposed = endpointsExposed;
+        this.endpointsAccessed = endpointsAccessed;
         this.storageRequirements = storageRequirements;
     }
 
@@ -39,5 +39,10 @@ public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApp
         InstanceBasedComponentBuilder scalingApproach(TScalingApproach scalingApproach);
 
         InstanceBasedComponentBuilder exposes(Endpoint service);
+    }
+
+    public boolean doesExpose(Endpoint endpoint) {
+
+        return endpointsExposed.contains(endpoint);
     }
 }

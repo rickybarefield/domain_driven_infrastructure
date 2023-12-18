@@ -61,3 +61,10 @@ Our domain has some AWS specific rules about the infrastructure:
 * An ALB should be created if any of the `Components` within the `Tier` `expose` an HTTP `Endpoint` 
 * An NLB should be creared if any of the `Components` within the `Tier` `expose` a TCP (non-HTTP) `Endpoint`
 
+## TODO
+
+* Create and link security groups
+* Create a standard naming approach for resources
+* Logic in AwsTier for creating Listeners should potentially be delegated
+
+* Feed outputs from one tier into another, including Endpoints to be accessed
