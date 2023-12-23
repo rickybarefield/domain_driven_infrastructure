@@ -1,13 +1,10 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
-import com.appagility.domaindriveninfrastructure.base.Endpoint;
-import com.appagility.domaindriveninfrastructure.base.Protocol;
+import com.appagility.MayBecome;
 import com.appagility.domaindriveninfrastructure.base.Tier;
 import com.pulumi.aws.ec2.Ec2Functions;
 import com.pulumi.aws.ec2.inputs.GetSubnetsArgs;
 import com.pulumi.aws.ec2.inputs.GetSubnetsFilterArgs;
-import com.pulumi.aws.lb.*;
-import com.pulumi.aws.lb.inputs.ListenerDefaultActionArgs;
 import lombok.Builder;
 import lombok.Singular;
 
@@ -15,6 +12,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class AwsTier extends Tier<AwsComponent> {
+
+    private MayBecome<AwsTierNlb> awsTierNlb = MayBecome.empty("awsTierNlb");
 
     @Builder
     public AwsTier(String name, @Singular("exposes") List<LoadBalancedEndpoint> exposes, @Singular List<AwsComponent> components) {
@@ -32,54 +31,32 @@ public class AwsTier extends Tier<AwsComponent> {
 
         this.components.forEach(c -> c.defineInfrastructure(subnets));
 
-        if(theTierExposesARawTcpEndpoint()) {
+        var exposedEndpointsWithComponents = exposes.stream().map(this::matchWithComponent).toList();
 
-            var nlb = createAnNlb();
+        var endpointsForNlb = AwsTierNlb.filterForNlb(exposedEndpointsWithComponents);
 
-            //TODO not convinced this logic shouldn't be delegated
-            addAllExposedRawTcpEndpointsToTheNlb(nlb);
+        if(!endpointsForNlb.isEmpty()) {
+
+            awsTierNlb.set(new AwsTierNlb(name, endpointsForNlb));
         }
-
     }
 
-    private boolean theTierExposesARawTcpEndpoint() {
-
-        return exposes.stream().anyMatch(e -> e.target().getProtocol() == Protocol.TCP);
-    }
-
-    private LoadBalancer createAnNlb() {
-
-        return new LoadBalancer(name, LoadBalancerArgs.builder().loadBalancerType("network").build());
-    }
-
-    private void addAllExposedRawTcpEndpointsToTheNlb(LoadBalancer nlb) {
-
-        var tcpExposedEndpoints = exposes.stream().filter(e -> e.target().getProtocol() == Protocol.TCP);
-
-        tcpExposedEndpoints.forEach(tcpLoadBalancedEndpoint -> {
-
-            var component = findComponentForEndpoint(tcpLoadBalancedEndpoint.target());
-
-            new Listener(name + "-some-component", ListenerArgs.builder()
-                    .port(tcpLoadBalancedEndpoint.port())
-                    .loadBalancerArn(nlb.arn())
-                    .defaultActions(ListenerDefaultActionArgs.builder()
-                            .type("forward")
-                            .targetGroupArn(component.getTargetGroupArn()).build())
-                    .build());
-        });
-    }
-
-    private AwsInstanceBasedComponent findComponentForEndpoint(Endpoint endpoint) {
+    private LoadBalancedEndpointWithMatchingComponent matchWithComponent(LoadBalancedEndpoint endpoint) {
 
         return components.stream().filter(AwsInstanceBasedComponent.class::isInstance)
                 .map(c -> (AwsInstanceBasedComponent)c)
-                .filter(c -> c.doesExpose(endpoint)).findFirst()
+                .filter(c -> c.doesExpose(endpoint.target()))
+                .map(c -> new LoadBalancedEndpointWithMatchingComponent(endpoint, c))
+                .findFirst()
                 .orElseThrow(() -> new RuntimeException("No components serve given endpoint"));
     }
 
     public static class AwsTierBuilder implements Tier.TierBuilder<AwsComponent> {
 
+
+    }
+
+    public record LoadBalancedEndpointWithMatchingComponent(LoadBalancedEndpoint endpoint, AwsInstanceBasedComponent component) {
 
     }
 }
