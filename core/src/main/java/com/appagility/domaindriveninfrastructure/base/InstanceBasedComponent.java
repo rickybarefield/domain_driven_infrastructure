@@ -6,6 +6,8 @@ import java.util.List;
 
 public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApproach> implements Component {
 
+    protected final ResourceNamer resourceNamer;
+
     protected final String shortCode;
 
     protected final GoldenAmi basedOn;
@@ -19,8 +21,9 @@ public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApp
     protected final StorageRequirement storageRequirements;
 
 
-    public InstanceBasedComponent(String shortCode, GoldenAmi basedOn, TScalingApproach scalingApproach, List<Endpoint> endpointsExposed, List<Endpoint> endpointsAccessed, StorageRequirement storageRequirements) {
+    public InstanceBasedComponent(ResourceNamer resourceNamer, String shortCode, GoldenAmi basedOn, TScalingApproach scalingApproach, List<Endpoint> endpointsExposed, List<Endpoint> endpointsAccessed, StorageRequirement storageRequirements) {
 
+        this.resourceNamer = resourceNamer;
         this.shortCode = shortCode;
         this.basedOn = basedOn;
         this.scalingApproach = scalingApproach;
@@ -32,13 +35,15 @@ public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApp
     public interface InstanceBasedComponentBuilder<TScalingApproach
             extends ScalingApproach> extends Builder<InstanceBasedComponent<TScalingApproach>> {
 
-        InstanceBasedComponentBuilder shortCode(String shortCode);
+        InstanceBasedComponentBuilder<TScalingApproach> resourceNamer(ResourceNamer resourceNamer);
 
-        InstanceBasedComponentBuilder basedOn(GoldenAmi base);
+        InstanceBasedComponentBuilder<TScalingApproach> shortCode(String shortCode);
 
-        InstanceBasedComponentBuilder scalingApproach(TScalingApproach scalingApproach);
+        InstanceBasedComponentBuilder<TScalingApproach> basedOn(GoldenAmi base);
 
-        InstanceBasedComponentBuilder exposes(Endpoint service);
+        InstanceBasedComponentBuilder<TScalingApproach> scalingApproach(TScalingApproach scalingApproach);
+
+        InstanceBasedComponentBuilder<TScalingApproach> exposes(Endpoint service);
     }
 
     public boolean doesExpose(Endpoint endpoint) {

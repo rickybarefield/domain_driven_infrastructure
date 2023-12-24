@@ -2,6 +2,7 @@ package com.appagility.domaindriveninfrastructure.aws;
 
 import com.appagility.domaindriveninfrastructure.aws.AwsTier.LoadBalancedEndpointWithMatchingComponent;
 import com.appagility.domaindriveninfrastructure.base.Protocol;
+import com.appagility.domaindriveninfrastructure.base.ResourceNamer;
 import com.pulumi.aws.ec2.SecurityGroup;
 import com.pulumi.aws.lb.Listener;
 import com.pulumi.aws.lb.ListenerArgs;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class AwsTierNlb implements AwsSecurable {
 
-    private String name;
+    private final ResourceNamer resourceNamer;
     private final SecurityGroup securityGroup;
 
     @Override
@@ -26,12 +27,12 @@ public class AwsTierNlb implements AwsSecurable {
     @Override
     public String getName() {
 
-        return name;
+        return resourceNamer.generateName("nlb");
     }
 
-    public AwsTierNlb(String tierName, List<LoadBalancedEndpointWithMatchingComponent> exposes) {
+    public AwsTierNlb(ResourceNamer resourceNamer, List<LoadBalancedEndpointWithMatchingComponent> exposes) {
 
-        name = tierName + "-nlb";
+        this.resourceNamer = resourceNamer;
 
         securityGroup = new SecurityGroup(getName() + "-nlb");
 

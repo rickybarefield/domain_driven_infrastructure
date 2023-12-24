@@ -2,6 +2,7 @@ package com.appagility.domaindriveninfrastructure.aws;
 
 import com.appagility.domaindriveninfrastructure.base.Endpoint;
 import com.appagility.domaindriveninfrastructure.CloudProviderFactory;
+import com.appagility.domaindriveninfrastructure.base.ResourceNamer;
 
 public class AwsFactory implements CloudProviderFactory<
         AwsTier.AwsTierBuilder,
@@ -10,16 +11,24 @@ public class AwsFactory implements CloudProviderFactory<
         AwsScalingApproach.AwsScalingApproachBuilder,
         AwsComponent> {
 
+
+    private final ResourceNamer resourceNamer;
+
+    public AwsFactory(ResourceNamer resourceNamer) {
+
+        this.resourceNamer = resourceNamer;
+    }
+
     @Override
     public AwsTier.AwsTierBuilder tierBuilder() {
 
-        return AwsTier.builder();
+        return AwsTier.builder().resourceNamer(resourceNamer);
     }
 
     @Override
     public AwsInstanceBasedComponent.AwsInstanceBasedComponentBuilder componentBuilder() {
 
-        return new AwsInstanceBasedComponent.AwsInstanceBasedComponentBuilder();
+        return new AwsInstanceBasedComponent.AwsInstanceBasedComponentBuilder().resourceNamer(resourceNamer);
     }
 
     @Override

@@ -1,10 +1,7 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
 import com.appagility.MayBecome;
-import com.appagility.domaindriveninfrastructure.base.Endpoint;
-import com.appagility.domaindriveninfrastructure.base.GoldenAmi;
-import com.appagility.domaindriveninfrastructure.base.InstanceBasedComponent;
-import com.appagility.domaindriveninfrastructure.base.StorageRequirement;
+import com.appagility.domaindriveninfrastructure.base.*;
 import com.pulumi.aws.autoscaling.Group;
 import com.pulumi.aws.autoscaling.GroupArgs;
 import com.pulumi.aws.autoscaling.inputs.GroupLaunchTemplateArgs;
@@ -20,19 +17,20 @@ import java.util.List;
 
 public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScalingApproach> implements AwsComponent, AwsSecurable {
 
-    private MayBecome<Group> group = MayBecome.empty("group");
+    private final MayBecome<Group> group = MayBecome.empty("group");
 
-    private MayBecome<SecurityGroup> securityGroup = MayBecome.empty("securityGroup");
+    private final MayBecome<SecurityGroup> securityGroup = MayBecome.empty("securityGroup");
 
     @Builder
-    public AwsInstanceBasedComponent(String shortCode,
+    public AwsInstanceBasedComponent(ResourceNamer resourceNamer,
+                                     String shortCode,
                                      GoldenAmi basedOn,
                                      AwsScalingApproach scalingApproach,
                                      @Singular("exposes") List<Endpoint> servicesExposed,
                                      List<Endpoint> servicesAccessed,
                                      StorageRequirement storageRequirements) {
 
-        super(shortCode, basedOn, scalingApproach, servicesExposed, servicesAccessed, storageRequirements);
+        super(resourceNamer, shortCode, basedOn, scalingApproach, servicesExposed, servicesAccessed, storageRequirements);
     }
 
     @Override
@@ -46,10 +44,11 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScaling
 
         var subnetIds = subnets.applyValue(GetSubnetsResult::ids);
 
-        securityGroup.set(new SecurityGroup("mongo"));
+        securityGroup.set(new SecurityGroup(resourceNamer.generateName(shortCode)));
 
-        var launchTemplate = new LaunchTemplate("mongo-launch", LaunchTemplateArgs.builder()
-                .namePrefix("mongo")
+        var launchTemplate = new LaunchTemplate(resourceNamer.generateName(shortCode),
+                LaunchTemplateArgs.builder()
+                .namePrefix(shortCode)
                 .imageId("ami-1a2b3c")
                 .instanceType("t2.micro")
                 .vpcSecurityGroupIds(securityGroup.get().id().applyValue(List::of))
@@ -61,7 +60,7 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScaling
 
         scalingApproach.addRequirements(groupArgsBuilder);
 
-        group.set(new Group(shortCode, groupArgsBuilder.build()));
+        group.set(new Group(resourceNamer.generateName(shortCode), groupArgsBuilder.build()));
     }
 
     public Output<String> getTargetGroupArn() {

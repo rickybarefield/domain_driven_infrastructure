@@ -4,9 +4,12 @@
     "maven@latest",
     "jetbrains.idea-community@latest"
   ],
+  "env": {
+    "JAVA_HOME": "/nix/store/q2vb58zhpsyhs3zq3zgyd3arv1m7b486-openjdk-21+35/lib/openjdk"
+  },
   "shell": {
     "init_hook": [
-      "echo 'Welcome to devbox!' > /dev/null"
+      "echo 'Welcome to devbox!' "
     ],
     "scripts": {
       "test": [
