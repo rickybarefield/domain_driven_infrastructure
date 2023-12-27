@@ -2,11 +2,11 @@ package com.appagility.domaindriveninfrastructure.base;
 
 import com.pulumi.Context;
 
-public class ContextResourceNamer implements ResourceNamer {
+public class ContextNamingStrategy implements NamingStrategy {
 
     private final String prefix;
 
-    public ContextResourceNamer(Context pulumiContext) {
+    public ContextNamingStrategy(Context pulumiContext) {
 
         prefix = pulumiContext.projectName() + "-" + pulumiContext.stackName() + "-";
     }

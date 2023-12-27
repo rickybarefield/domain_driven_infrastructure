@@ -1,5 +1,6 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
+import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
 import com.pulumi.aws.ec2.SecurityGroup;
 import com.pulumi.aws.ec2.SecurityGroupRule;
 import com.pulumi.aws.ec2.SecurityGroupRuleArgs;
@@ -11,9 +12,11 @@ public interface AwsSecurable {
 
     String getName();
 
+    NamingStrategy getNamingStrategy();
+
     default void allowTcpAccessTo(AwsSecurable other, int port) {
 
-        new SecurityGroupRule("to-" + other.getName() + "-on-" + port,
+        new SecurityGroupRule(getNamingStrategy().generateName(other.getName() + "-" +  port),
                 SecurityGroupRuleArgs.builder()
                         .type("egress")
                         .fromPort(port)
@@ -23,7 +26,7 @@ public interface AwsSecurable {
                         .sourceSecurityGroupId(other.getSecurityGroup().id())
                         .build());
 
-        new SecurityGroupRule("from-" + getName() + "-on-" + port,
+        new SecurityGroupRule(getNamingStrategy().generateName(getName() + "-" + port),
                 SecurityGroupRuleArgs.builder()
                         .type("ingress")
                         .fromPort(port)

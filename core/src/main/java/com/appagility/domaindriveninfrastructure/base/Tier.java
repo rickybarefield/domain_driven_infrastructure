@@ -12,10 +12,10 @@ public abstract class Tier<TComponent extends Component> {
 
     protected final List<TComponent> components;
     
-    protected final ResourceNamer resourceNamer;
+    protected final NamingStrategy namingStrategy;
 
-    public Tier(ResourceNamer resourceNamer, List<LoadBalancedEndpoint> exposes, List<TComponent> components, String name) {
-        this.resourceNamer = resourceNamer;
+    public Tier(NamingStrategy namingStrategy, List<LoadBalancedEndpoint> exposes, List<TComponent> components, String name) {
+        this.namingStrategy = namingStrategy;
 
         this.name = name;
         this.exposes = exposes;
@@ -26,7 +26,7 @@ public abstract class Tier<TComponent extends Component> {
 
     public interface TierBuilder<TComponent extends Component> extends Builder<Tier<TComponent>> {
 
-        TierBuilder resourceNamer(ResourceNamer resourceNamer);
+        TierBuilder<TComponent> namingStrategy(NamingStrategy resourceNamer);
 
         TierBuilder<TComponent> name(String name);
 

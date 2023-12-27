@@ -1,12 +1,14 @@
 package com.appagility.domaindriveninfrastructure.base;
 
 import com.appagility.Builder;
+import lombok.Getter;
 
 import java.util.List;
 
 public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApproach> implements Component {
 
-    protected final ResourceNamer resourceNamer;
+    @Getter
+    protected final NamingStrategy namingStrategy;
 
     protected final String shortCode;
 
@@ -21,9 +23,9 @@ public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApp
     protected final StorageRequirement storageRequirements;
 
 
-    public InstanceBasedComponent(ResourceNamer resourceNamer, String shortCode, GoldenAmi basedOn, TScalingApproach scalingApproach, List<Endpoint> endpointsExposed, List<Endpoint> endpointsAccessed, StorageRequirement storageRequirements) {
+    public InstanceBasedComponent(NamingStrategy namingStrategy, String shortCode, GoldenAmi basedOn, TScalingApproach scalingApproach, List<Endpoint> endpointsExposed, List<Endpoint> endpointsAccessed, StorageRequirement storageRequirements) {
 
-        this.resourceNamer = resourceNamer;
+        this.namingStrategy = namingStrategy;
         this.shortCode = shortCode;
         this.basedOn = basedOn;
         this.scalingApproach = scalingApproach;
@@ -35,7 +37,7 @@ public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApp
     public interface InstanceBasedComponentBuilder<TScalingApproach
             extends ScalingApproach> extends Builder<InstanceBasedComponent<TScalingApproach>> {
 
-        InstanceBasedComponentBuilder<TScalingApproach> resourceNamer(ResourceNamer resourceNamer);
+        InstanceBasedComponentBuilder<TScalingApproach> namingStrategy(NamingStrategy resourceNamer);
 
         InstanceBasedComponentBuilder<TScalingApproach> shortCode(String shortCode);
 

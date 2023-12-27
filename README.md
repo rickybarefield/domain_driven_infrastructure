@@ -63,8 +63,4 @@ Our domain has some AWS specific rules about the infrastructure:
 
 ## TODO
 
-* Create and link security groups
-* Create a standard naming approach for resources
-* Logic in AwsTier for creating Listeners should potentially be delegated
-
 * Feed outputs from one tier into another, including Endpoints to be accessed

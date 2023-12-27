@@ -1,7 +1,7 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
 import com.appagility.MayBecome;
-import com.appagility.domaindriveninfrastructure.base.ResourceNamer;
+import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
 import com.appagility.domaindriveninfrastructure.base.Tier;
 import com.pulumi.aws.ec2.Ec2Functions;
 import com.pulumi.aws.ec2.inputs.GetSubnetsArgs;
@@ -17,9 +17,9 @@ public class AwsTier extends Tier<AwsComponent> {
     private MayBecome<AwsTierNlb> awsTierNlb = MayBecome.empty("awsTierNlb");
 
     @Builder
-    public AwsTier(ResourceNamer resourceNamer, String name, @Singular("exposes") List<LoadBalancedEndpoint> exposes, @Singular List<AwsComponent> components) {
+    public AwsTier(NamingStrategy namingStrategy, String name, @Singular("exposes") List<LoadBalancedEndpoint> exposes, @Singular List<AwsComponent> components) {
 
-        super(resourceNamer, exposes, components, name);
+        super(namingStrategy, exposes, components, name);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class AwsTier extends Tier<AwsComponent> {
 
         if(!endpointsForNlb.isEmpty()) {
 
-            awsTierNlb.set(new AwsTierNlb(resourceNamer, endpointsForNlb));
+            awsTierNlb.set(new AwsTierNlb(namingStrategy, endpointsForNlb));
         }
     }
 

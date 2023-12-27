@@ -22,7 +22,7 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScaling
     private final MayBecome<SecurityGroup> securityGroup = MayBecome.empty("securityGroup");
 
     @Builder
-    public AwsInstanceBasedComponent(ResourceNamer resourceNamer,
+    public AwsInstanceBasedComponent(NamingStrategy namingStrategy,
                                      String shortCode,
                                      GoldenAmi basedOn,
                                      AwsScalingApproach scalingApproach,
@@ -30,7 +30,7 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScaling
                                      List<Endpoint> servicesAccessed,
                                      StorageRequirement storageRequirements) {
 
-        super(resourceNamer, shortCode, basedOn, scalingApproach, servicesExposed, servicesAccessed, storageRequirements);
+        super(namingStrategy, shortCode, basedOn, scalingApproach, servicesExposed, servicesAccessed, storageRequirements);
     }
 
     @Override
@@ -44,9 +44,9 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScaling
 
         var subnetIds = subnets.applyValue(GetSubnetsResult::ids);
 
-        securityGroup.set(new SecurityGroup(resourceNamer.generateName(shortCode)));
+        securityGroup.set(new SecurityGroup(namingStrategy.generateName(shortCode)));
 
-        var launchTemplate = new LaunchTemplate(resourceNamer.generateName(shortCode),
+        var launchTemplate = new LaunchTemplate(namingStrategy.generateName(shortCode),
                 LaunchTemplateArgs.builder()
                 .namePrefix(shortCode)
                 .imageId("ami-1a2b3c")
@@ -60,7 +60,7 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScaling
 
         scalingApproach.addRequirements(groupArgsBuilder);
 
-        group.set(new Group(resourceNamer.generateName(shortCode), groupArgsBuilder.build()));
+        group.set(new Group(namingStrategy.generateName(shortCode), groupArgsBuilder.build()));
     }
 
     public Output<String> getTargetGroupArn() {

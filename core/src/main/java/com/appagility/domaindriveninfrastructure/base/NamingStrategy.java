@@ -1,6 +1,6 @@
 package com.appagility.domaindriveninfrastructure.base;
 
-public interface ResourceNamer {
+public interface NamingStrategy {
 
     String generateName(String resourceSpecificContext);
 }

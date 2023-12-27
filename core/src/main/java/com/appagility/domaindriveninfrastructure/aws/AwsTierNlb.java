@@ -2,19 +2,21 @@ package com.appagility.domaindriveninfrastructure.aws;
 
 import com.appagility.domaindriveninfrastructure.aws.AwsTier.LoadBalancedEndpointWithMatchingComponent;
 import com.appagility.domaindriveninfrastructure.base.Protocol;
-import com.appagility.domaindriveninfrastructure.base.ResourceNamer;
+import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
 import com.pulumi.aws.ec2.SecurityGroup;
 import com.pulumi.aws.lb.Listener;
 import com.pulumi.aws.lb.ListenerArgs;
 import com.pulumi.aws.lb.LoadBalancer;
 import com.pulumi.aws.lb.LoadBalancerArgs;
 import com.pulumi.aws.lb.inputs.ListenerDefaultActionArgs;
+import lombok.Getter;
 
 import java.util.List;
 
 public class AwsTierNlb implements AwsSecurable {
 
-    private final ResourceNamer resourceNamer;
+    @Getter
+    private final NamingStrategy namingStrategy;
     private final SecurityGroup securityGroup;
 
     @Override
@@ -27,16 +29,16 @@ public class AwsTierNlb implements AwsSecurable {
     @Override
     public String getName() {
 
-        return resourceNamer.generateName("nlb");
+        return "nlb";
     }
 
-    public AwsTierNlb(ResourceNamer resourceNamer, List<LoadBalancedEndpointWithMatchingComponent> exposes) {
+    public AwsTierNlb(NamingStrategy namingStrategy, List<LoadBalancedEndpointWithMatchingComponent> exposes) {
 
-        this.resourceNamer = resourceNamer;
+        this.namingStrategy = namingStrategy;
 
-        securityGroup = new SecurityGroup(getName() + "-nlb");
+        securityGroup = new SecurityGroup(namingStrategy.generateName(getName()));
 
-        loadBalancer = new LoadBalancer(getName(), LoadBalancerArgs.builder().loadBalancerType("network")
+        loadBalancer = new LoadBalancer(namingStrategy.generateName(getName()), LoadBalancerArgs.builder().loadBalancerType("network")
                 .securityGroups(securityGroup.id().applyValue(List::of)).build());
 
         addAllExposedEndpointsToTheNlb(exposes);
@@ -46,7 +48,11 @@ public class AwsTierNlb implements AwsSecurable {
 
         exposes.forEach(exposedEndpointAndComponent -> {
 
-            new Listener(getName() + "-some-component", ListenerArgs.builder()
+            String name = namingStrategy.generateName(
+                    exposedEndpointAndComponent.component().getName() + "-" + exposedEndpointAndComponent.endpoint().port());
+
+            new Listener(name,
+                    ListenerArgs.builder()
                     .port(exposedEndpointAndComponent.endpoint().port())
                     .loadBalancerArn(loadBalancer.arn())
                     .defaultActions(ListenerDefaultActionArgs.builder()
