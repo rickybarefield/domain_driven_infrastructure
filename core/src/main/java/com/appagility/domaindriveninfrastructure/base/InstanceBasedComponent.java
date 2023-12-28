@@ -5,7 +5,8 @@ import lombok.Getter;
 
 import java.util.List;
 
-public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApproach> implements Component {
+public abstract class InstanceBasedComponent<TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TScalingApproach>,
+        TScalingApproach extends ScalingApproach> implements Component {
 
     @Getter
     protected final NamingStrategy namingStrategy;
@@ -16,14 +17,23 @@ public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApp
 
     protected final TScalingApproach scalingApproach;
 
-    protected final List<Endpoint> endpointsExposed;
+    protected final List<Endpoint<TInstanceBasedComponent>> endpointsExposed;
 
-    protected final List<Endpoint> endpointsAccessed;
+    protected final List<Endpoint<TInstanceBasedComponent>> endpointsAccessed;
 
     protected final StorageRequirement storageRequirements;
 
 
-    public InstanceBasedComponent(NamingStrategy namingStrategy, String shortCode, GoldenAmi basedOn, TScalingApproach scalingApproach, List<Endpoint> endpointsExposed, List<Endpoint> endpointsAccessed, StorageRequirement storageRequirements) {
+    public InstanceBasedComponent(NamingStrategy namingStrategy,
+                                  String shortCode,
+                                  GoldenAmi basedOn,
+                                  TScalingApproach scalingApproach,
+                                  List<Endpoint<TInstanceBasedComponent>> endpointsExposed,
+                                  List<Endpoint<TInstanceBasedComponent>> endpointsAccessed,
+                                  StorageRequirement storageRequirements) {
+
+
+        endpointsExposed.forEach(e -> e.setComponent((TInstanceBasedComponent) this));
 
         this.namingStrategy = namingStrategy;
         this.shortCode = shortCode;
@@ -34,22 +44,19 @@ public abstract class InstanceBasedComponent<TScalingApproach extends ScalingApp
         this.storageRequirements = storageRequirements;
     }
 
-    public interface InstanceBasedComponentBuilder<TScalingApproach
-            extends ScalingApproach> extends Builder<InstanceBasedComponent<TScalingApproach>> {
+    public interface InstanceBasedComponentBuilder<TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TScalingApproach>,
+            TScalingApproach extends ScalingApproach> extends Builder<InstanceBasedComponent<TInstanceBasedComponent, TScalingApproach>> {
 
-        InstanceBasedComponentBuilder<TScalingApproach> namingStrategy(NamingStrategy resourceNamer);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent, TScalingApproach> namingStrategy(NamingStrategy resourceNamer);
 
-        InstanceBasedComponentBuilder<TScalingApproach> shortCode(String shortCode);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> shortCode(String shortCode);
 
-        InstanceBasedComponentBuilder<TScalingApproach> basedOn(GoldenAmi base);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> basedOn(GoldenAmi base);
 
-        InstanceBasedComponentBuilder<TScalingApproach> scalingApproach(TScalingApproach scalingApproach);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> scalingApproach(TScalingApproach scalingApproach);
 
-        InstanceBasedComponentBuilder<TScalingApproach> exposes(Endpoint service);
-    }
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> exposes(Endpoint<TInstanceBasedComponent> endpoint);
 
-    public boolean doesExpose(Endpoint endpoint) {
-
-        return endpointsExposed.contains(endpoint);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> accesses(Endpoint<TInstanceBasedComponent> endpoint);
     }
 }

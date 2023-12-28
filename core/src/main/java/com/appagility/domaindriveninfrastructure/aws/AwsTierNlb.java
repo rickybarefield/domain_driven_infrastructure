@@ -1,8 +1,8 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
-import com.appagility.domaindriveninfrastructure.aws.AwsTier.LoadBalancedEndpointWithMatchingComponent;
-import com.appagility.domaindriveninfrastructure.base.Protocol;
 import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
+import com.appagility.domaindriveninfrastructure.base.Protocol;
+import com.appagility.domaindriveninfrastructure.base.Tier;
 import com.pulumi.aws.ec2.SecurityGroup;
 import com.pulumi.aws.lb.Listener;
 import com.pulumi.aws.lb.ListenerArgs;
@@ -32,7 +32,7 @@ public class AwsTierNlb implements AwsSecurable {
         return "nlb";
     }
 
-    public AwsTierNlb(NamingStrategy namingStrategy, List<LoadBalancedEndpointWithMatchingComponent> exposes) {
+    public AwsTierNlb(NamingStrategy namingStrategy, List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent>> exposes) {
 
         this.namingStrategy = namingStrategy;
 
@@ -44,30 +44,30 @@ public class AwsTierNlb implements AwsSecurable {
         addAllExposedEndpointsToTheNlb(exposes);
     }
 
-    private void addAllExposedEndpointsToTheNlb(List<LoadBalancedEndpointWithMatchingComponent> exposes) {
+    private void addAllExposedEndpointsToTheNlb(List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent>> exposes) {
 
-        exposes.forEach(exposedEndpointAndComponent -> {
+        exposes.forEach(exposedEndpoint -> {
 
             String name = namingStrategy.generateName(
-                    exposedEndpointAndComponent.component().getName() + "-" + exposedEndpointAndComponent.endpoint().port());
+                    exposedEndpoint.target().getComponent().getName() + "-" + exposedEndpoint.port());
 
             new Listener(name,
                     ListenerArgs.builder()
-                    .port(exposedEndpointAndComponent.endpoint().port())
+                    .port(exposedEndpoint.port())
                     .loadBalancerArn(loadBalancer.arn())
                     .defaultActions(ListenerDefaultActionArgs.builder()
                             .type("forward")
-                            .targetGroupArn(exposedEndpointAndComponent.component().getTargetGroupArn()).build())
+                            .targetGroupArn(exposedEndpoint.target().getComponent().getTargetGroupArn()).build())
                     .build());
 
-            allowTcpAccessTo(exposedEndpointAndComponent.component(), exposedEndpointAndComponent.endpoint().port());
+            allowTcpAccessTo(exposedEndpoint.target().getComponent(), exposedEndpoint.port());
         });
     }
 
 
-    public static List<LoadBalancedEndpointWithMatchingComponent> filterForNlb(List<LoadBalancedEndpointWithMatchingComponent> exposedEndpoints) {
+    public static List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent>> filterForNlb(List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent>> exposedEndpoints) {
 
         return exposedEndpoints.stream().filter(
-                e -> e.endpoint().target().getProtocol() == Protocol.TCP).toList();
+                e -> e.target().getProtocol() == Protocol.TCP).toList();
     }
 }

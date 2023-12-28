@@ -8,5 +8,5 @@ import com.pulumi.core.Output;
 public interface AwsComponent extends Component {
     void defineInfrastructure(Output<GetSubnetsResult> subnet);
 
-    boolean doesExpose(Endpoint endpoint);
+    String getName();
 }

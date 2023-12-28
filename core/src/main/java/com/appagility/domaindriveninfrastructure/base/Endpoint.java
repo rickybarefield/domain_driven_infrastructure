@@ -2,9 +2,11 @@ package com.appagility.domaindriveninfrastructure.base;
 
 
 import com.appagility.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.Setter;
 
-public abstract class Endpoint {
+public abstract class Endpoint<TComponent extends Component> {
 
     @Getter
     private final Protocol protocol;
@@ -12,16 +14,20 @@ public abstract class Endpoint {
     @Getter
     private final int port;
 
+    @Getter
+    @Setter(AccessLevel.PACKAGE)
+    private TComponent component;
+
     public Endpoint(Protocol protocol, int port) {
 
         this.protocol = protocol;
         this.port = port;
     }
 
-    public interface EndpointBuilder extends Builder<Endpoint> {
+    public interface EndpointBuilder<TComponent extends Component> extends Builder<Endpoint<TComponent>> {
 
-        EndpointBuilder port(int port);
+        EndpointBuilder<TComponent> port(int port);
 
-        EndpointBuilder protocol(Protocol protocol);
+        EndpointBuilder<TComponent> protocol(Protocol protocol);
     }
 }

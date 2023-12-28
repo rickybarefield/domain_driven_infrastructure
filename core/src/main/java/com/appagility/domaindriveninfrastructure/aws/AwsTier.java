@@ -12,12 +12,12 @@ import lombok.Singular;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class AwsTier extends Tier<AwsComponent> {
+public class AwsTier extends Tier<AwsInstanceBasedComponent> {
 
-    private MayBecome<AwsTierNlb> awsTierNlb = MayBecome.empty("awsTierNlb");
+    private final MayBecome<AwsTierNlb> awsTierNlb = MayBecome.empty("awsTierNlb");
 
     @Builder
-    public AwsTier(NamingStrategy namingStrategy, String name, @Singular("exposes") List<LoadBalancedEndpoint> exposes, @Singular List<AwsComponent> components) {
+    public AwsTier(NamingStrategy namingStrategy, String name, @Singular("exposes") List<LoadBalancedEndpoint<AwsInstanceBasedComponent>> exposes, @Singular List<AwsInstanceBasedComponent> components) {
 
         super(namingStrategy, exposes, components, name);
     }
@@ -32,9 +32,7 @@ public class AwsTier extends Tier<AwsComponent> {
 
         this.components.forEach(c -> c.defineInfrastructure(subnets));
 
-        var exposedEndpointsWithComponents = exposes.stream().map(this::matchWithComponent).toList();
-
-        var endpointsForNlb = AwsTierNlb.filterForNlb(exposedEndpointsWithComponents);
+        var endpointsForNlb = AwsTierNlb.filterForNlb(exposes);
 
         if(!endpointsForNlb.isEmpty()) {
 
@@ -42,22 +40,8 @@ public class AwsTier extends Tier<AwsComponent> {
         }
     }
 
-    private LoadBalancedEndpointWithMatchingComponent matchWithComponent(LoadBalancedEndpoint endpoint) {
+    public static class AwsTierBuilder implements Tier.TierBuilder<AwsInstanceBasedComponent> {
 
-        return components.stream().filter(AwsInstanceBasedComponent.class::isInstance)
-                .map(c -> (AwsInstanceBasedComponent)c)
-                .filter(c -> c.doesExpose(endpoint.target()))
-                .map(c -> new LoadBalancedEndpointWithMatchingComponent(endpoint, c))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("No components serve given endpoint"));
-    }
-
-    public static class AwsTierBuilder implements Tier.TierBuilder<AwsComponent> {
-
-
-    }
-
-    public record LoadBalancedEndpointWithMatchingComponent(LoadBalancedEndpoint endpoint, AwsInstanceBasedComponent component) {
 
     }
 }

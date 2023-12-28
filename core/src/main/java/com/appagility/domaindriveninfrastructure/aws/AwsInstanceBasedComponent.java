@@ -11,26 +11,32 @@ import com.pulumi.aws.ec2.SecurityGroup;
 import com.pulumi.aws.ec2.outputs.GetSubnetsResult;
 import com.pulumi.core.Output;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.Singular;
 
 import java.util.List;
 
-public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScalingApproach> implements AwsComponent, AwsSecurable {
+public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanceBasedComponent, AwsScalingApproach>
+        implements AwsComponent, AwsSecurable {
 
     private final MayBecome<Group> group = MayBecome.empty("group");
 
     private final MayBecome<SecurityGroup> securityGroup = MayBecome.empty("securityGroup");
 
     @Builder
-    public AwsInstanceBasedComponent(NamingStrategy namingStrategy,
+    public AwsInstanceBasedComponent(@NonNull
+                                     NamingStrategy namingStrategy,
+                                     @NonNull
                                      String shortCode,
+                                     @NonNull
                                      GoldenAmi basedOn,
+                                     @NonNull
                                      AwsScalingApproach scalingApproach,
-                                     @Singular("exposes") List<Endpoint> servicesExposed,
-                                     List<Endpoint> servicesAccessed,
+                                     @Singular("exposes") List<Endpoint<AwsInstanceBasedComponent>> endpointsExposed,
+                                     @Singular("accesses") List<Endpoint<AwsInstanceBasedComponent>> endpointsAccessed,
                                      StorageRequirement storageRequirements) {
 
-        super(namingStrategy, shortCode, basedOn, scalingApproach, servicesExposed, servicesAccessed, storageRequirements);
+        super(namingStrategy, shortCode, basedOn, scalingApproach, endpointsExposed, endpointsAccessed, storageRequirements);
     }
 
     @Override
@@ -74,7 +80,7 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsScaling
         return securityGroup.get();
     }
 
-    public static class AwsInstanceBasedComponentBuilder implements InstanceBasedComponentBuilder<AwsScalingApproach> {
+    public static class AwsInstanceBasedComponentBuilder implements InstanceBasedComponentBuilder<AwsInstanceBasedComponent, AwsScalingApproach> {
 
     }
 }

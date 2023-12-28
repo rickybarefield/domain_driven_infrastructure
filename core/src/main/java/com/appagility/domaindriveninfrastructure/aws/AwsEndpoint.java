@@ -4,14 +4,14 @@ import com.appagility.domaindriveninfrastructure.base.Endpoint;
 import com.appagility.domaindriveninfrastructure.base.Protocol;
 import lombok.Builder;
 
-public class AwsEndpoint extends Endpoint {
+public class AwsEndpoint extends Endpoint<AwsInstanceBasedComponent> {
 
     @Builder
     public AwsEndpoint(Protocol protocol, int port) {
         super(protocol, port);
     }
 
-    public static class AwsEndpointBuilder implements EndpointBuilder {
+    public static class AwsEndpointBuilder implements EndpointBuilder<AwsInstanceBasedComponent> {
 
     }
 }

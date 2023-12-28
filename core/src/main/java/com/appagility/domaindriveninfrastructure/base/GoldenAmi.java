@@ -8,5 +8,5 @@ public class GoldenAmi {
     private String id;
 
     public static GoldenAmi BASE = new GoldenAmi("ami-0122335235123525");
-    public static GoldenAmi MONGO = new GoldenAmi("ami-689394723490823");
+    public static GoldenAmi POSTGRES = new GoldenAmi("ami-689394723490823");
 }

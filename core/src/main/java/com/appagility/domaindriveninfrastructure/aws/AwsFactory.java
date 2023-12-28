@@ -6,10 +6,10 @@ import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
 
 public class AwsFactory implements CloudProviderFactory<
         AwsTier.AwsTierBuilder,
-        AwsInstanceBasedComponent.AwsInstanceBasedComponentBuilder,
         AwsScalingApproach,
+        AwsInstanceBasedComponent.AwsInstanceBasedComponentBuilder,
         AwsScalingApproach.AwsScalingApproachBuilder,
-        AwsComponent> {
+        AwsInstanceBasedComponent> {
 
 
     private final NamingStrategy namingStrategy;
@@ -32,10 +32,11 @@ public class AwsFactory implements CloudProviderFactory<
     }
 
     @Override
-    public Endpoint.EndpointBuilder endpointBuilder() {
+    public Endpoint.EndpointBuilder<AwsInstanceBasedComponent> endpointBuilder() {
 
         return new AwsEndpoint.AwsEndpointBuilder();
     }
+
 
     @Override
     public AwsScalingApproach.AwsScalingApproachBuilder scalingApproachBuilder() {

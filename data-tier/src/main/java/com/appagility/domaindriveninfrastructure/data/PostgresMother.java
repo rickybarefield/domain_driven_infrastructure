@@ -2,15 +2,20 @@ package com.appagility.domaindriveninfrastructure.data;
 
 import com.appagility.domaindriveninfrastructure.aws.AwsComponent;
 import com.appagility.domaindriveninfrastructure.aws.AwsFactory;
+import com.appagility.domaindriveninfrastructure.aws.AwsInstanceBasedComponent;
 import com.appagility.domaindriveninfrastructure.base.Endpoint;
 import com.appagility.domaindriveninfrastructure.base.GoldenAmi;
 import com.appagility.domaindriveninfrastructure.base.Protocol;
+import lombok.Getter;
 
 
 public  class PostgresMother {
 
-    private final AwsComponent component;
-    private final Endpoint endpoint;
+    @Getter
+    private final AwsInstanceBasedComponent component;
+
+    @Getter
+    private final Endpoint<AwsInstanceBasedComponent> endpoint;
 
     public PostgresMother(AwsFactory cloudProviderFactory) {
 
@@ -25,15 +30,5 @@ public  class PostgresMother {
                 .shortCode("psgres")
                 .exposes(endpoint)
                 .build();
-    }
-
-    public AwsComponent component() {
-
-        return component;
-    }
-
-    public Endpoint endpoint() {
-
-        return endpoint;
     }
 }
