@@ -60,7 +60,7 @@ public class AwsTierNlb implements AwsSecurable {
                             .targetGroupArn(exposedEndpoint.target().getComponent().getTargetGroupArn()).build())
                     .build());
 
-            allowTcpAccessTo(exposedEndpoint.target().getComponent(), exposedEndpoint.port());
+            allowTcpAccessTo(exposedEndpoint.target().getComponent(), exposedEndpoint.target().getPort());
         });
     }
 

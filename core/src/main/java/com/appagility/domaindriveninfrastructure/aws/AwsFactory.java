@@ -11,7 +11,6 @@ public class AwsFactory implements CloudProviderFactory<
         AwsScalingApproach.AwsScalingApproachBuilder,
         AwsInstanceBasedComponent> {
 
-
     private final NamingStrategy namingStrategy;
 
     public AwsFactory(NamingStrategy namingStrategy) {

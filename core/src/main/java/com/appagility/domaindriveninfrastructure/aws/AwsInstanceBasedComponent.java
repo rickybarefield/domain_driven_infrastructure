@@ -67,6 +67,9 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanc
         scalingApproach.addRequirements(groupArgsBuilder);
 
         group.set(new Group(namingStrategy.generateName(shortCode), groupArgsBuilder.build()));
+
+        endpointsAccessed.forEach(endpointsAccessed ->
+                allowTcpAccessTo(endpointsAccessed.getComponent(), endpointsAccessed.getPort()));
     }
 
     public Output<String> getTargetGroupArn() {

@@ -16,7 +16,8 @@ public interface AwsSecurable {
 
     default void allowTcpAccessTo(AwsSecurable other, int port) {
 
-        new SecurityGroupRule(getNamingStrategy().generateName(other.getName() + "-" +  port),
+        new SecurityGroupRule(getNamingStrategy().generateName(
+                "egress-from-" + getName() + "-to-" + other.getName() + "-" +  port),
                 SecurityGroupRuleArgs.builder()
                         .type("egress")
                         .fromPort(port)
@@ -26,7 +27,7 @@ public interface AwsSecurable {
                         .sourceSecurityGroupId(other.getSecurityGroup().id())
                         .build());
 
-        new SecurityGroupRule(getNamingStrategy().generateName(getName() + "-" + port),
+        new SecurityGroupRule(getNamingStrategy().generateName("ingress-from-" + getName() + "-to-" + other.getName() + "-" + port),
                 SecurityGroupRuleArgs.builder()
                         .type("ingress")
                         .fromPort(port)
