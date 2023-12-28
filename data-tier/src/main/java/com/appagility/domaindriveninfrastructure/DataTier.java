@@ -20,8 +20,8 @@ public class DataTier {
 
             var dataTier = cloudProviderFactory.tierBuilder()
                     .name("data")
-                    .component(postgresMother.getComponent())
                     .component(indexerMother.getComponent())
+                    .component(postgresMother.getComponent())
                     .exposes(postgresMother.getEndpoint(), 7412)
                     .build();
 

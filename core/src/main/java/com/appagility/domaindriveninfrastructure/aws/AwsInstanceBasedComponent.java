@@ -2,6 +2,7 @@ package com.appagility.domaindriveninfrastructure.aws;
 
 import com.appagility.MayBecome;
 import com.appagility.domaindriveninfrastructure.base.*;
+import com.google.common.base.Suppliers;
 import com.pulumi.aws.autoscaling.Group;
 import com.pulumi.aws.autoscaling.GroupArgs;
 import com.pulumi.aws.autoscaling.inputs.GroupLaunchTemplateArgs;
@@ -15,13 +16,15 @@ import lombok.NonNull;
 import lombok.Singular;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanceBasedComponent, AwsScalingApproach>
         implements AwsComponent, AwsSecurable {
 
     private final MayBecome<Group> group = MayBecome.empty("group");
 
-    private final MayBecome<SecurityGroup> securityGroup = MayBecome.empty("securityGroup");
+    private final Supplier<SecurityGroup> securityGroup = Suppliers.memoize(() ->
+            new SecurityGroup(namingStrategy.generateName(shortCode)));
 
     @Builder
     public AwsInstanceBasedComponent(@NonNull
@@ -49,8 +52,6 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanc
     public void defineInfrastructure(Output<GetSubnetsResult> subnets) {
 
         var subnetIds = subnets.applyValue(GetSubnetsResult::ids);
-
-        securityGroup.set(new SecurityGroup(namingStrategy.generateName(shortCode)));
 
         var launchTemplate = new LaunchTemplate(namingStrategy.generateName(shortCode),
                 LaunchTemplateArgs.builder()
