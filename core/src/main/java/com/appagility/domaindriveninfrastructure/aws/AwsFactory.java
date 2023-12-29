@@ -8,7 +8,8 @@ public class AwsFactory implements CloudProviderFactory<
         AwsScalingApproach,
         AwsInstanceBasedComponent.AwsInstanceBasedComponentBuilder,
         AwsEndpoint,
-        AwsEndpoint.AwsEndpointBuilder,
+        InternalAwsEndpoint,
+        InternalAwsEndpoint.InternalAwsEndpointBuilder,
         AwsScalingApproach.AwsScalingApproachBuilder,
         AwsInstanceBasedComponent> {
 
@@ -32,9 +33,9 @@ public class AwsFactory implements CloudProviderFactory<
     }
 
     @Override
-    public AwsEndpoint.AwsEndpointBuilder endpointBuilder() {
+    public InternalAwsEndpoint.InternalAwsEndpointBuilder endpointBuilder() {
 
-        return new AwsEndpoint.AwsEndpointBuilder();
+        return new InternalAwsEndpoint.InternalAwsEndpointBuilder();
     }
 
 

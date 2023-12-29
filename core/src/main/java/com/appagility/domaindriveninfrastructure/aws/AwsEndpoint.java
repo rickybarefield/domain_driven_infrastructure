@@ -1,17 +1,13 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
-import com.appagility.domaindriveninfrastructure.base.InternalEndpoint;
-import com.appagility.domaindriveninfrastructure.base.Protocol;
-import lombok.Builder;
+import com.appagility.domaindriveninfrastructure.base.Endpoint;
+import com.pulumi.core.Output;
 
-public class AwsEndpoint extends InternalEndpoint<AwsInstanceBasedComponent> {
+public interface AwsEndpoint extends Endpoint {
 
-    @Builder
-    public AwsEndpoint(Protocol protocol, int port) {
-        super(protocol, port);
-    }
+    int getPort();
 
-    public static class AwsEndpointBuilder implements EndpointBuilder<AwsInstanceBasedComponent> {
+    String getName();
 
-    }
+    Output<String> getSecurityGroupId();
 }

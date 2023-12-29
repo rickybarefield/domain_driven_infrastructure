@@ -1,9 +1,8 @@
 package com.appagility.domaindriveninfrastructure;
 
-import com.appagility.domaindriveninfrastructure.aws.AwsEndpoint;
+import com.appagility.domaindriveninfrastructure.aws.InternalAwsEndpoint;
 import com.appagility.domaindriveninfrastructure.aws.AwsFactory;
 import com.appagility.domaindriveninfrastructure.base.ContextNamingStrategy;
-import com.appagility.domaindriveninfrastructure.base.InternalEndpoint;
 import com.appagility.domaindriveninfrastructure.base.Protocol;
 import com.pulumi.Pulumi;
 import com.pulumi.resources.StackReference;
@@ -23,7 +22,7 @@ public class ComputeTier {
 //
 //            InternalEndpoint postgresEndpoint = dataStackOutputs.getPostgresEndpoint();
 
-            var businessServiceMother = new BusinessServiceMother(cloudProviderFactory, new AwsEndpoint(Protocol.TCP, 5672));
+            var businessServiceMother = new BusinessServiceMother(cloudProviderFactory, new InternalAwsEndpoint(Protocol.TCP, 5672));
 
             var computeTier = cloudProviderFactory.tierBuilder()
                     .name("compute")

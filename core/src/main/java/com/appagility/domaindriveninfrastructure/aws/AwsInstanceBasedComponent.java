@@ -21,7 +21,11 @@ import lombok.Singular;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanceBasedComponent, AwsEndpoint, AwsScalingApproach>
+public class AwsInstanceBasedComponent extends InstanceBasedComponent<
+        AwsInstanceBasedComponent,
+        AwsEndpoint,
+        InternalAwsEndpoint,
+        AwsScalingApproach>
         implements AwsComponent, AwsSecurable {
 
     private final MayBecome<Group> group = MayBecome.empty("group");
@@ -38,7 +42,7 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanc
                                      GoldenAmi basedOn,
                                      @NonNull
                                      AwsScalingApproach scalingApproach,
-                                     @Singular("exposes") List<AwsEndpoint> endpointsExposed,
+                                     @Singular("exposes") List<InternalAwsEndpoint> endpointsExposed,
                                      @Singular("accesses") List<AwsEndpoint> endpointsAccessed,
                                      StorageRequirement storageRequirements) {
 
@@ -86,7 +90,7 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanc
         return securityGroup.get();
     }
 
-    public static class AwsInstanceBasedComponentBuilder implements InstanceBasedComponentBuilder<AwsInstanceBasedComponent, AwsEndpoint, AwsScalingApproach> {
+    public static class AwsInstanceBasedComponentBuilder implements InstanceBasedComponentBuilder<AwsInstanceBasedComponent, AwsEndpoint, InternalAwsEndpoint, AwsScalingApproach> {
 
     }
 }

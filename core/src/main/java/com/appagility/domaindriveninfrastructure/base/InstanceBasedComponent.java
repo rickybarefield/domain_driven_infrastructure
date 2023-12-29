@@ -6,9 +6,11 @@ import lombok.Getter;
 import java.util.List;
 
 public abstract class InstanceBasedComponent<
-        TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TEndpoint, TScalingApproach>,
-        TEndpoint extends InternalEndpoint<TInstanceBasedComponent>,
-        TScalingApproach extends ScalingApproach> implements Component {
+        TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TEndpoint, TInternalEndpoint, TScalingApproach>,
+        TEndpoint extends Endpoint,
+        TInternalEndpoint extends InternalEndpoint<TInstanceBasedComponent>,
+        TScalingApproach extends ScalingApproach>
+        implements Component {
 
     @Getter
     protected final NamingStrategy namingStrategy;
@@ -19,7 +21,7 @@ public abstract class InstanceBasedComponent<
 
     protected final TScalingApproach scalingApproach;
 
-    protected final List<TEndpoint> endpointsExposed;
+    protected final List<TInternalEndpoint> endpointsExposed;
 
     protected final List<TEndpoint> endpointsAccessed;
 
@@ -30,7 +32,7 @@ public abstract class InstanceBasedComponent<
                                   String shortCode,
                                   GoldenAmi basedOn,
                                   TScalingApproach scalingApproach,
-                                  List<TEndpoint> endpointsExposed,
+                                  List<TInternalEndpoint> endpointsExposed,
                                   List<TEndpoint> endpointsAccessed,
                                   StorageRequirement storageRequirements) {
 
@@ -47,20 +49,21 @@ public abstract class InstanceBasedComponent<
     }
 
     public interface InstanceBasedComponentBuilder<
-            TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TEndpoint, TScalingApproach>,
-            TEndpoint extends InternalEndpoint<TInstanceBasedComponent>,
-            TScalingApproach extends ScalingApproach> extends Builder<InstanceBasedComponent<TInstanceBasedComponent, TEndpoint, TScalingApproach>> {
+            TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TEndpoint, TInternalEndpoint, TScalingApproach>,
+            TEndpoint extends Endpoint,
+            TInternalEndpoint extends InternalEndpoint<TInstanceBasedComponent>,
+            TScalingApproach extends ScalingApproach> extends Builder<InstanceBasedComponent<TInstanceBasedComponent, TEndpoint, TInternalEndpoint, TScalingApproach>> {
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent, TEndpoint, TScalingApproach> namingStrategy(NamingStrategy resourceNamer);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent, TEndpoint, TInternalEndpoint, TScalingApproach> namingStrategy(NamingStrategy resourceNamer);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> shortCode(String shortCode);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent, TEndpoint, TInternalEndpoint, TScalingApproach> shortCode(String shortCode);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> basedOn(GoldenAmi base);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent, TEndpoint, TInternalEndpoint, TScalingApproach> basedOn(GoldenAmi base);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> scalingApproach(TScalingApproach scalingApproach);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent, TEndpoint, TInternalEndpoint, TScalingApproach> scalingApproach(TScalingApproach scalingApproach);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> exposes(TEndpoint endpoint);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent, TEndpoint, TInternalEndpoint, TScalingApproach> exposes(TInternalEndpoint endpoint);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> accesses(TEndpoint endpoint);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent, TEndpoint, TInternalEndpoint, TScalingApproach> accesses(TEndpoint endpoint);
     }
 }

@@ -3,13 +3,14 @@ package com.appagility.domaindriveninfrastructure;
 import com.appagility.domaindriveninfrastructure.base.*;
 
 public interface CloudProviderFactory<
-        TTierBuilder extends Tier.TierBuilder<TComponent, TEndpoint>,
+        TTierBuilder extends Tier.TierBuilder<TComponent, TInternalEndpoint>,
         TScalingApproach extends ScalingApproach,
-        TComponentBuilder extends InstanceBasedComponent.InstanceBasedComponentBuilder<TComponent, TEndpoint, TScalingApproach>,
-        TEndpoint extends InternalEndpoint<TComponent>,
+        TComponentBuilder extends InstanceBasedComponent.InstanceBasedComponentBuilder<TComponent, TEndpoint, TInternalEndpoint, TScalingApproach>,
+        TEndpoint extends Endpoint,
+        TInternalEndpoint extends InternalEndpoint<TComponent>,
         TEndpointBuilder extends InternalEndpoint.EndpointBuilder<TComponent>,
         TScalingApproachBuilder extends ScalingApproach.ScalingApproachBuilder,
-        TComponent extends InstanceBasedComponent<TComponent, TEndpoint, TScalingApproach>> {
+        TComponent extends InstanceBasedComponent<TComponent, TEndpoint, TInternalEndpoint, TScalingApproach>> {
 
     TTierBuilder tierBuilder();
 

@@ -19,8 +19,8 @@ public interface AwsSecurable extends Securable<AwsEndpoint> {
     default void allowTcpAccessTo(AwsEndpoint endpoint) {
 
         var port = endpoint.getPort();
-        var otherSecurityGroupId = endpoint.getComponent().getSecurityGroup().id();
-        var otherName = endpoint.getComponent().getName();
+        var otherSecurityGroupId = endpoint.getSecurityGroupId();
+        var otherName = endpoint.getName();
 
         new SecurityGroupRule(getNamingStrategy().generateName(
                 "egress-from-" + getName() + "-to-" + otherName + "-" + port),

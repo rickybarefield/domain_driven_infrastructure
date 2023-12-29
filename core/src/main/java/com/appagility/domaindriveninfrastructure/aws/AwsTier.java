@@ -12,7 +12,7 @@ import lombok.Singular;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class AwsTier extends Tier<AwsInstanceBasedComponent, AwsEndpoint> {
+public class AwsTier extends Tier<AwsInstanceBasedComponent, InternalAwsEndpoint> {
 
     private final MayBecome<AwsTierNlb> awsTierNlb = MayBecome.empty("awsTierNlb");
 
@@ -20,7 +20,7 @@ public class AwsTier extends Tier<AwsInstanceBasedComponent, AwsEndpoint> {
     public AwsTier(
             NamingStrategy namingStrategy,
             String name,
-            @Singular("exposes") List<LoadBalancedEndpoint<AwsInstanceBasedComponent, AwsEndpoint>> exposes,
+            @Singular("exposes") List<LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> exposes,
             @Singular List<AwsInstanceBasedComponent> components) {
 
         super(namingStrategy, exposes, components, name);
@@ -44,7 +44,7 @@ public class AwsTier extends Tier<AwsInstanceBasedComponent, AwsEndpoint> {
         }
     }
 
-    public static class AwsTierBuilder implements Tier.TierBuilder<AwsInstanceBasedComponent, AwsEndpoint> {
+    public static class AwsTierBuilder implements Tier.TierBuilder<AwsInstanceBasedComponent, InternalAwsEndpoint> {
 
 
     }
