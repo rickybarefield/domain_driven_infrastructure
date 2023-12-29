@@ -61,6 +61,25 @@ Our domain has some AWS specific rules about the infrastructure:
 * An ALB should be created if any of the `Components` within the `Tier` `expose` an HTTP `Endpoint` 
 * An NLB should be created if any of the `Components` within the `Tier` `expose` a TCP (non-HTTP) `Endpoint`
 
+## Running the code
+
+1. First login to a local backend
+
+`pulumi login --local`
+
+2. Build the code and install to local maven repo
+
+`cd [REPO_ROOT]`
+`mvn clean install`
+
+3. Build the tiers in order
+
+Execute `pulumi up` on:
+
+* data-tier
+* compute-tier
+
 ## TODO
 
 * Feed outputs from one tier into another, including Endpoints to be accessed
+* Create subnets - perhaps make the core code do the subnetting

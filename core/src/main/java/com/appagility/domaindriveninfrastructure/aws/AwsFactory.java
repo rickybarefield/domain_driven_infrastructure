@@ -1,6 +1,5 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
-import com.appagility.domaindriveninfrastructure.base.Endpoint;
 import com.appagility.domaindriveninfrastructure.CloudProviderFactory;
 import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
 
@@ -8,6 +7,8 @@ public class AwsFactory implements CloudProviderFactory<
         AwsTier.AwsTierBuilder,
         AwsScalingApproach,
         AwsInstanceBasedComponent.AwsInstanceBasedComponentBuilder,
+        AwsEndpoint,
+        AwsEndpoint.AwsEndpointBuilder,
         AwsScalingApproach.AwsScalingApproachBuilder,
         AwsInstanceBasedComponent> {
 
@@ -31,7 +32,7 @@ public class AwsFactory implements CloudProviderFactory<
     }
 
     @Override
-    public Endpoint.EndpointBuilder<AwsInstanceBasedComponent> endpointBuilder() {
+    public AwsEndpoint.AwsEndpointBuilder endpointBuilder() {
 
         return new AwsEndpoint.AwsEndpointBuilder();
     }

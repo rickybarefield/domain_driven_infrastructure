@@ -32,7 +32,7 @@ public class AwsTierNlb implements AwsSecurable {
         return "nlb";
     }
 
-    public AwsTierNlb(NamingStrategy namingStrategy, List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent>> exposes) {
+    public AwsTierNlb(NamingStrategy namingStrategy, List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent, AwsEndpoint>> exposes) {
 
         this.namingStrategy = namingStrategy;
 
@@ -44,7 +44,7 @@ public class AwsTierNlb implements AwsSecurable {
         addAllExposedEndpointsToTheNlb(exposes);
     }
 
-    private void addAllExposedEndpointsToTheNlb(List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent>> exposes) {
+    private void addAllExposedEndpointsToTheNlb(List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent, AwsEndpoint>> exposes) {
 
         exposes.forEach(exposedEndpoint -> {
 
@@ -60,12 +60,13 @@ public class AwsTierNlb implements AwsSecurable {
                             .targetGroupArn(exposedEndpoint.target().getComponent().getTargetGroupArn()).build())
                     .build());
 
-            allowTcpAccessTo(exposedEndpoint.target().getComponent(), exposedEndpoint.target().getPort());
+            allowTcpAccessTo(exposedEndpoint.target());
         });
     }
 
 
-    public static List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent>> filterForNlb(List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent>> exposedEndpoints) {
+    public static List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent, AwsEndpoint>> filterForNlb(
+            List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent, AwsEndpoint>> exposedEndpoints) {
 
         return exposedEndpoints.stream().filter(
                 e -> e.target().getProtocol() == Protocol.TCP).toList();

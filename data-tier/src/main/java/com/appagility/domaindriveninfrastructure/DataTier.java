@@ -5,6 +5,7 @@ import com.appagility.domaindriveninfrastructure.data.DataIndexerMother;
 import com.appagility.domaindriveninfrastructure.data.PostgresMother;
 import com.pulumi.Pulumi;
 import com.appagility.domaindriveninfrastructure.aws.AwsFactory;
+import com.pulumi.core.Output;
 
 public class DataTier {
 
@@ -28,7 +29,7 @@ public class DataTier {
             dataTier.defineInfrastructure();
 
 
-//            ctx.export("exampleOutput", Output.of("example"));
+            ctx.export("example", Output.of("example"));
         });
     }
 

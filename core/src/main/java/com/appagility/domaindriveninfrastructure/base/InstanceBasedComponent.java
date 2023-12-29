@@ -5,7 +5,9 @@ import lombok.Getter;
 
 import java.util.List;
 
-public abstract class InstanceBasedComponent<TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TScalingApproach>,
+public abstract class InstanceBasedComponent<
+        TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TEndpoint, TScalingApproach>,
+        TEndpoint extends InternalEndpoint<TInstanceBasedComponent>,
         TScalingApproach extends ScalingApproach> implements Component {
 
     @Getter
@@ -17,9 +19,9 @@ public abstract class InstanceBasedComponent<TInstanceBasedComponent extends Ins
 
     protected final TScalingApproach scalingApproach;
 
-    protected final List<Endpoint<TInstanceBasedComponent>> endpointsExposed;
+    protected final List<TEndpoint> endpointsExposed;
 
-    protected final List<Endpoint<TInstanceBasedComponent>> endpointsAccessed;
+    protected final List<TEndpoint> endpointsAccessed;
 
     protected final StorageRequirement storageRequirements;
 
@@ -28,8 +30,8 @@ public abstract class InstanceBasedComponent<TInstanceBasedComponent extends Ins
                                   String shortCode,
                                   GoldenAmi basedOn,
                                   TScalingApproach scalingApproach,
-                                  List<Endpoint<TInstanceBasedComponent>> endpointsExposed,
-                                  List<Endpoint<TInstanceBasedComponent>> endpointsAccessed,
+                                  List<TEndpoint> endpointsExposed,
+                                  List<TEndpoint> endpointsAccessed,
                                   StorageRequirement storageRequirements) {
 
 
@@ -44,19 +46,21 @@ public abstract class InstanceBasedComponent<TInstanceBasedComponent extends Ins
         this.storageRequirements = storageRequirements;
     }
 
-    public interface InstanceBasedComponentBuilder<TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TScalingApproach>,
-            TScalingApproach extends ScalingApproach> extends Builder<InstanceBasedComponent<TInstanceBasedComponent, TScalingApproach>> {
+    public interface InstanceBasedComponentBuilder<
+            TInstanceBasedComponent extends InstanceBasedComponent<TInstanceBasedComponent, TEndpoint, TScalingApproach>,
+            TEndpoint extends InternalEndpoint<TInstanceBasedComponent>,
+            TScalingApproach extends ScalingApproach> extends Builder<InstanceBasedComponent<TInstanceBasedComponent, TEndpoint, TScalingApproach>> {
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent, TScalingApproach> namingStrategy(NamingStrategy resourceNamer);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent, TEndpoint, TScalingApproach> namingStrategy(NamingStrategy resourceNamer);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> shortCode(String shortCode);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> shortCode(String shortCode);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> basedOn(GoldenAmi base);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> basedOn(GoldenAmi base);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> scalingApproach(TScalingApproach scalingApproach);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> scalingApproach(TScalingApproach scalingApproach);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> exposes(Endpoint<TInstanceBasedComponent> endpoint);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> exposes(TEndpoint endpoint);
 
-        InstanceBasedComponentBuilder<TInstanceBasedComponent,TScalingApproach> accesses(Endpoint<TInstanceBasedComponent> endpoint);
+        InstanceBasedComponentBuilder<TInstanceBasedComponent,TEndpoint, TScalingApproach> accesses(TEndpoint endpoint);
     }
 }

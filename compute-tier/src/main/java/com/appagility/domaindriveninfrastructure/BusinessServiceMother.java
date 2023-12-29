@@ -1,8 +1,8 @@
 package com.appagility.domaindriveninfrastructure;
 
+import com.appagility.domaindriveninfrastructure.aws.AwsEndpoint;
 import com.appagility.domaindriveninfrastructure.aws.AwsFactory;
 import com.appagility.domaindriveninfrastructure.aws.AwsInstanceBasedComponent;
-import com.appagility.domaindriveninfrastructure.base.Endpoint;
 import com.appagility.domaindriveninfrastructure.base.GoldenAmi;
 import com.appagility.domaindriveninfrastructure.base.Protocol;
 import lombok.Getter;
@@ -13,9 +13,9 @@ public class BusinessServiceMother {
     private final AwsInstanceBasedComponent component;
 
     @Getter
-    private final Endpoint<AwsInstanceBasedComponent> endpoint;
+    private final AwsEndpoint endpoint;
 
-    public BusinessServiceMother(AwsFactory awsFactory) {
+    public BusinessServiceMother(AwsFactory awsFactory, AwsEndpoint postgresEndpoint) {
 
         endpoint = awsFactory.endpointBuilder()
                 .protocol(Protocol.TCP)
@@ -27,6 +27,7 @@ public class BusinessServiceMother {
                 .shortCode("bussvc")
                 .scalingApproach(awsFactory.scalingApproachBuilder().minInstances(2).maxInstances(2).build())
                 .exposes(endpoint)
+                .accesses(postgresEndpoint)
                 .build();
     }
 }

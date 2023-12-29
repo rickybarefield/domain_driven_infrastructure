@@ -1,7 +1,10 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
 import com.appagility.MayBecome;
-import com.appagility.domaindriveninfrastructure.base.*;
+import com.appagility.domaindriveninfrastructure.base.GoldenAmi;
+import com.appagility.domaindriveninfrastructure.base.InstanceBasedComponent;
+import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
+import com.appagility.domaindriveninfrastructure.base.StorageRequirement;
 import com.google.common.base.Suppliers;
 import com.pulumi.aws.autoscaling.Group;
 import com.pulumi.aws.autoscaling.GroupArgs;
@@ -18,7 +21,7 @@ import lombok.Singular;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanceBasedComponent, AwsScalingApproach>
+public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanceBasedComponent, AwsEndpoint, AwsScalingApproach>
         implements AwsComponent, AwsSecurable {
 
     private final MayBecome<Group> group = MayBecome.empty("group");
@@ -35,8 +38,8 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanc
                                      GoldenAmi basedOn,
                                      @NonNull
                                      AwsScalingApproach scalingApproach,
-                                     @Singular("exposes") List<Endpoint<AwsInstanceBasedComponent>> endpointsExposed,
-                                     @Singular("accesses") List<Endpoint<AwsInstanceBasedComponent>> endpointsAccessed,
+                                     @Singular("exposes") List<AwsEndpoint> endpointsExposed,
+                                     @Singular("accesses") List<AwsEndpoint> endpointsAccessed,
                                      StorageRequirement storageRequirements) {
 
         super(namingStrategy, shortCode, basedOn, scalingApproach, endpointsExposed, endpointsAccessed, storageRequirements);
@@ -69,8 +72,7 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanc
 
         group.set(new Group(namingStrategy.generateName(shortCode), groupArgsBuilder.build()));
 
-        endpointsAccessed.forEach(endpointsAccessed ->
-                allowTcpAccessTo(endpointsAccessed.getComponent(), endpointsAccessed.getPort()));
+        endpointsAccessed.forEach(this::allowTcpAccessTo);
     }
 
     public Output<String> getTargetGroupArn() {
@@ -84,7 +86,7 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<AwsInstanc
         return securityGroup.get();
     }
 
-    public static class AwsInstanceBasedComponentBuilder implements InstanceBasedComponentBuilder<AwsInstanceBasedComponent, AwsScalingApproach> {
+    public static class AwsInstanceBasedComponentBuilder implements InstanceBasedComponentBuilder<AwsInstanceBasedComponent, AwsEndpoint, AwsScalingApproach> {
 
     }
 }

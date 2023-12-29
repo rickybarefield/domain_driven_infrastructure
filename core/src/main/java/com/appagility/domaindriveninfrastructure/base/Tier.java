@@ -4,18 +4,18 @@ import com.appagility.Builder;
 
 import java.util.List;
 
-public abstract class Tier<TComponent extends Component> {
+public abstract class Tier<TComponent extends Component, TEndpoint extends InternalEndpoint<TComponent>> {
 
     protected final String name;
 
-    protected final List<LoadBalancedEndpoint<TComponent>> exposes;
+    protected final List<LoadBalancedEndpoint<TComponent, TEndpoint>> exposes;
 
     protected final List<TComponent> components;
     
     protected final NamingStrategy namingStrategy;
 
     public Tier(NamingStrategy namingStrategy,
-                List<LoadBalancedEndpoint<TComponent>> exposes,
+                List<LoadBalancedEndpoint<TComponent, TEndpoint>> exposes,
                 List<TComponent> components,
                 String name) {
 
@@ -27,23 +27,26 @@ public abstract class Tier<TComponent extends Component> {
 
     public abstract void defineInfrastructure();
 
-    public interface TierBuilder<TComponent extends Component> extends Builder<Tier<TComponent>> {
+    public interface TierBuilder<TComponent extends Component, TEndpoint extends InternalEndpoint<TComponent>>
+            extends Builder<Tier<TComponent, TEndpoint>> {
 
-        TierBuilder<TComponent> namingStrategy(NamingStrategy resourceNamer);
+        TierBuilder<TComponent, TEndpoint> namingStrategy(NamingStrategy resourceNamer);
 
-        TierBuilder<TComponent> name(String name);
+        TierBuilder<TComponent, TEndpoint> name(String name);
 
-        TierBuilder<TComponent> exposes(LoadBalancedEndpoint<TComponent> loadBalancedEndpoint);
+        TierBuilder<TComponent, TEndpoint> exposes(LoadBalancedEndpoint<TComponent, TEndpoint> loadBalancedEndpoint);
 
-        default TierBuilder<TComponent> exposes(Endpoint<TComponent> endpoint, int onPort) {
+        default TierBuilder<TComponent, TEndpoint> exposes(TEndpoint endpoint, int onPort) {
 
-            return exposes(new LoadBalancedEndpoint<TComponent>(endpoint, onPort));
+            return exposes(new LoadBalancedEndpoint<TComponent, TEndpoint>(endpoint, onPort));
         }
 
-        TierBuilder<TComponent> component(TComponent component);
+        TierBuilder<TComponent, TEndpoint> component(TComponent component);
     }
 
-    public record LoadBalancedEndpoint<TComponent extends Component>(Endpoint<TComponent> target, int port) {
+    public record LoadBalancedEndpoint<
+            TComponent extends Component,
+            TEndpoint extends InternalEndpoint<TComponent>>(TEndpoint target, int port) {
 
     }
 }

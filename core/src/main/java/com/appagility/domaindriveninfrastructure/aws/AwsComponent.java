@@ -1,7 +1,6 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
 import com.appagility.domaindriveninfrastructure.base.Component;
-import com.appagility.domaindriveninfrastructure.base.Endpoint;
 import com.pulumi.aws.ec2.outputs.GetSubnetsResult;
 import com.pulumi.core.Output;
 

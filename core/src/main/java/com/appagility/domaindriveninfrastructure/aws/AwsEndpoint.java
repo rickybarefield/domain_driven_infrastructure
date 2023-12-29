@@ -1,10 +1,10 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
-import com.appagility.domaindriveninfrastructure.base.Endpoint;
+import com.appagility.domaindriveninfrastructure.base.InternalEndpoint;
 import com.appagility.domaindriveninfrastructure.base.Protocol;
 import lombok.Builder;
 
-public class AwsEndpoint extends Endpoint<AwsInstanceBasedComponent> {
+public class AwsEndpoint extends InternalEndpoint<AwsInstanceBasedComponent> {
 
     @Builder
     public AwsEndpoint(Protocol protocol, int port) {
