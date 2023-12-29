@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.appagility.domaindriveninfrastructure</groupId>
-    <artifactId>ddi-mid</artifactId>
+    <artifactId>ddi-compute</artifactId>
 
     <parent>
         <groupId>com.appagility.domaindriveninfrastructure</groupId>
@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <mainClass>com.appagility.domaindriveninfrastructure.MidTier</mainClass>
+        <mainClass>com.appagility.domaindriveninfrastructure.ComputeTier</mainClass>
         <mainArgs/>
     </properties>
 

@@ -52,14 +52,14 @@ later extension.
 Our domain has some AWS specific rules about the infrastructure:
 
 * A security group should be created for each `Component`
-    * allowing egress to the `Endpoints` the `Components` is `dependent` 
+    * allowing egress to the `Endpoints` the `Components` is `dependent` on
       to the security groups of the relevant `Component` or load balancer
     * allowing ingress for the `Endpoints` of the `Component` from the security groups
       of Components which are directly dependent
     * allowing ingress from the load balancer where an `Endpoint` is exposed from the `Tier`
 
 * An ALB should be created if any of the `Components` within the `Tier` `expose` an HTTP `Endpoint` 
-* An NLB should be creared if any of the `Components` within the `Tier` `expose` a TCP (non-HTTP) `Endpoint`
+* An NLB should be created if any of the `Components` within the `Tier` `expose` a TCP (non-HTTP) `Endpoint`
 
 ## TODO
 

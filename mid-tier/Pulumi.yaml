@@ -1,7 +1,0 @@
-name: ddi-mid
-
-description: Domain Driven Infrastructure - Mid Tier
-
-runtime: java
-template:
-  description: "A domain driven infrastructure example - mid tier"

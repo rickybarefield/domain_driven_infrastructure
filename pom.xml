@@ -19,7 +19,7 @@
 
     <modules>
         <module>data-tier</module>
-        <module>mid-tier</module>
+        <module>compute-tier</module>
         <module>core</module>
     </modules>
 

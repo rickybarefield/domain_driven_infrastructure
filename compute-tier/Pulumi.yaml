@@ -1,0 +1,7 @@
+name: ddi-compute
+
+description: Domain Driven Infrastructure - Compute Tier
+
+runtime: java
+template:
+  description: "A domain driven infrastructure example - compute tier"
