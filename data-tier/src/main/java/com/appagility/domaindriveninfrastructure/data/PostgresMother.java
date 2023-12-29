@@ -24,11 +24,18 @@ public  class PostgresMother {
                 .port(5432)
                 .build();
 
+        var clusteringEndpoint = cloudProviderFactory.endpointBuilder()
+                .protocol(Protocol.TCP)
+                .port(5382)
+                .build();
+
         component = cloudProviderFactory.componentBuilder()
                 .basedOn(GoldenAmi.BASE)
                 .scalingApproach(cloudProviderFactory.scalingApproachBuilder().minInstances(3).maxInstances(3).build())
                 .shortCode("psgres")
                 .exposes(endpoint)
+                .exposes(clusteringEndpoint)
+                .accesses(clusteringEndpoint) //Components should be able to access endpoints of others in ASG
                 .build();
     }
 }
