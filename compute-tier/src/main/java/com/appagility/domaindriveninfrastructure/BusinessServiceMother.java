@@ -1,5 +1,6 @@
 package com.appagility.domaindriveninfrastructure;
 
+import com.appagility.domaindriveninfrastructure.aws.AwsEndpoint;
 import com.appagility.domaindriveninfrastructure.aws.InternalAwsEndpoint;
 import com.appagility.domaindriveninfrastructure.aws.AwsFactory;
 import com.appagility.domaindriveninfrastructure.aws.AwsInstanceBasedComponent;
@@ -15,7 +16,7 @@ public class BusinessServiceMother {
     @Getter
     private final InternalAwsEndpoint endpoint;
 
-    public BusinessServiceMother(AwsFactory awsFactory, InternalAwsEndpoint postgresEndpoint) {
+    public BusinessServiceMother(AwsFactory awsFactory, AwsEndpoint postgresEndpoint) {
 
         endpoint = awsFactory.endpointBuilder()
                 .protocol(Protocol.TCP)
