@@ -43,10 +43,4 @@ public abstract class Tier<TComponent extends Component, TEndpoint extends Inter
 
         TierBuilder<TComponent, TEndpoint> component(TComponent component);
     }
-
-    public record LoadBalancedEndpoint<
-            TComponent extends Component,
-            TEndpoint extends InternalEndpoint<TComponent>>(TEndpoint target, int port) {
-
-    }
 }

@@ -1,5 +1,6 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
+import com.appagility.domaindriveninfrastructure.base.LoadBalancedEndpoint;
 import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
 import com.appagility.domaindriveninfrastructure.base.Protocol;
 import com.appagility.domaindriveninfrastructure.base.Tier;
@@ -32,7 +33,7 @@ public class AwsTierNlb implements AwsSecurable {
         return "nlb";
     }
 
-    public AwsTierNlb(NamingStrategy namingStrategy, List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> exposes) {
+    public AwsTierNlb(NamingStrategy namingStrategy, List<LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> exposes) {
 
         this.namingStrategy = namingStrategy;
 
@@ -44,7 +45,7 @@ public class AwsTierNlb implements AwsSecurable {
         addAllExposedEndpointsToTheNlb(exposes);
     }
 
-    private void addAllExposedEndpointsToTheNlb(List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> exposes) {
+    private void addAllExposedEndpointsToTheNlb(List<LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> exposes) {
 
         exposes.forEach(exposedEndpoint -> {
 
@@ -65,8 +66,8 @@ public class AwsTierNlb implements AwsSecurable {
     }
 
 
-    public static List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> filterForNlb(
-            List<Tier.LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> exposedEndpoints) {
+    public static List<LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> filterForNlb(
+            List<LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> exposedEndpoints) {
 
         return exposedEndpoints.stream().filter(
                 e -> e.target().getProtocol() == Protocol.TCP).toList();

@@ -1,11 +1,8 @@
 package com.appagility.domaindriveninfrastructure;
 
-import com.appagility.domaindriveninfrastructure.aws.AwsEndpoint;
 import com.appagility.domaindriveninfrastructure.aws.AwsFactory;
-import com.appagility.domaindriveninfrastructure.aws.ReferencedAwsEndpoint;
 import com.appagility.domaindriveninfrastructure.base.ContextNamingStrategy;
 import com.pulumi.Pulumi;
-import com.pulumi.core.Output;
 import com.pulumi.resources.StackReference;
 
 public class ComputeTier {
@@ -17,13 +14,12 @@ public class ComputeTier {
             var namingStrategy = new ContextNamingStrategy(ctx);
             var cloudProviderFactory = new AwsFactory(namingStrategy);
 
-            var dataStack = new StackReference("organization/ddi-data/" + ctx.stackName());
+            //Outputs from the data tier can be accessed in a type safe manner
+            var dataStackOutputs = DataStackOutputs.deserialize(ctx);
 
-            //var dataStackOutputs = DataStackOutputs.deserialize(dataStack);
-
-            AwsEndpoint postgresEndpoint = new ReferencedAwsEndpoint(5632, "postgres", Output.of("some-id")); //dataStackOutputs.getPostgresEndpoint();
-
-            var businessServiceMother = new BusinessServiceMother(cloudProviderFactory, postgresEndpoint);
+            //Here one of the outputs is passed through as an AwsEndpoint and used to state that the business service needs access
+            //to Postgres
+            var businessServiceMother = new BusinessServiceMother(cloudProviderFactory, dataStackOutputs.getPostgresEndpoint());
 
             var computeTier = cloudProviderFactory.tierBuilder()
                     .name("compute")

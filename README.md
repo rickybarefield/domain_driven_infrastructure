@@ -81,5 +81,4 @@ Execute `pulumi up` on:
 
 ## TODO
 
-* Feed outputs from one tier into another, including Endpoints to be accessed
 * Create subnets - perhaps make the core code do the subnetting

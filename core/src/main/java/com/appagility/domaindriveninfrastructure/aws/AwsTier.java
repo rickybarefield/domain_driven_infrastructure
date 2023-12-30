@@ -1,6 +1,7 @@
 package com.appagility.domaindriveninfrastructure.aws;
 
 import com.appagility.MayBecome;
+import com.appagility.domaindriveninfrastructure.base.LoadBalancedEndpoint;
 import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
 import com.appagility.domaindriveninfrastructure.base.Tier;
 import com.pulumi.aws.ec2.Ec2Functions;
