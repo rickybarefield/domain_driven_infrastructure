@@ -21,6 +21,7 @@
         <module>data-tier</module>
         <module>compute-tier</module>
         <module>core</module>
+        <module>networking</module>
     </modules>
 
     <dependencies>
@@ -39,6 +40,11 @@
             <artifactId>lombok</artifactId>
             <version>1.18.30</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.seancfoley</groupId>
+            <artifactId>ipaddress</artifactId>
+            <version>5.4.0</version>
         </dependency>
     </dependencies>
 
@@ -94,4 +100,5 @@
             </plugins>
         </pluginManagement>
     </build>
+
 </project>

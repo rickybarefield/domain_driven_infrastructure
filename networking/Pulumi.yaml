@@ -1,0 +1,7 @@
+name: ddi-networking
+
+description: Domain Driven Infrastructure - Networking
+
+runtime: java
+template:
+  description: "A domain driven infrastructure example - networking"

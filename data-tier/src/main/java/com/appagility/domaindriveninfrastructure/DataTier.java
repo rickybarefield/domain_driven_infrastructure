@@ -36,5 +36,4 @@ public class DataTier {
             new DataStackOutputs(loadBalancedPostgresEndpoint).serialize(ctx);
         });
     }
-
 }
