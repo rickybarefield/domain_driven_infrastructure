@@ -26,6 +26,10 @@ Although infrastructure doesn't necessarily live in the business domain, there
 are often business rules which drive which infrastructure is deployed.  This
 is the domain being modeled.
 
+Your business domain will determine how you structure your domain.
+In the example given below, the aggregate root is a Tier.  Whilst appropriate for some, others may prefer to have a root which relates to a microservice, or related microservices which provide some user facing functionality.
+The choice may be based on the way in which your domain is deployed and how it changes over time.
+
 ## Our example infrastructure domain
 
 (Domain language is `highlighted`)
@@ -60,6 +64,11 @@ Our domain has some AWS specific rules about the infrastructure:
 
 * An ALB should be created if any of the `Components` within the `Tier` `expose` an HTTP `Endpoint` 
 * An NLB should be created if any of the `Components` within the `Tier` `expose` a TCP (non-HTTP) `Endpoint`
+
+#### VPC and Subnets
+
+The VPC and subnets are created by the Networking module.
+A CIDR range is provided for the stack (dev in this example).  The networking module then divides this into the number of subnets needed based on the number of tiers.
 
 ## Running the code
 
