@@ -14,8 +14,9 @@ public class ComputeTier {
             var namingStrategy = new ContextNamingStrategy(ctx);
             var cloudProviderFactory = new AwsFactory(namingStrategy);
 
-            //Outputs from the data tier can be accessed in a type safe manner
+            //Outputs from the data tier and networking can be accessed in a type safe manner
             var dataStackOutputs = DataStackOutputs.deserialize(ctx);
+            var networkingOutputs = NetworkingOutputs.deserialize(ctx);
 
             //Here one of the outputs is passed through as an AwsEndpoint and used to state that the business service needs access
             //to Postgres
@@ -23,6 +24,7 @@ public class ComputeTier {
 
             var computeTier = cloudProviderFactory.tierBuilder()
                     .name("compute")
+                    .subnets(networkingOutputs.getComputeSubnets())
                     .component(businessServiceMother.getComponent())
                     .exposes(businessServiceMother.getEndpoint(), 9001)
                     .build();
