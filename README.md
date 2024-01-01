@@ -76,9 +76,6 @@ Our domain has some AWS specific rules about the infrastructure:
 
 Execute `pulumi up` on:
 
+* networking
 * data-tier
 * compute-tier
-
-## TODO
-
-* Create subnets - perhaps make the core code do the subnetting

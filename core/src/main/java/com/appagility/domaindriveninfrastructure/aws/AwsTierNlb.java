@@ -3,13 +3,13 @@ package com.appagility.domaindriveninfrastructure.aws;
 import com.appagility.domaindriveninfrastructure.base.LoadBalancedEndpoint;
 import com.appagility.domaindriveninfrastructure.base.NamingStrategy;
 import com.appagility.domaindriveninfrastructure.base.Protocol;
-import com.appagility.domaindriveninfrastructure.base.Tier;
 import com.pulumi.aws.ec2.SecurityGroup;
 import com.pulumi.aws.lb.Listener;
 import com.pulumi.aws.lb.ListenerArgs;
 import com.pulumi.aws.lb.LoadBalancer;
 import com.pulumi.aws.lb.LoadBalancerArgs;
 import com.pulumi.aws.lb.inputs.ListenerDefaultActionArgs;
+import com.pulumi.core.Output;
 import lombok.Getter;
 
 import java.util.List;
@@ -33,14 +33,18 @@ public class AwsTierNlb implements AwsSecurable {
         return "nlb";
     }
 
-    public AwsTierNlb(NamingStrategy namingStrategy, List<LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> exposes) {
+    public AwsTierNlb(NamingStrategy namingStrategy, List<LoadBalancedEndpoint<AwsInstanceBasedComponent, InternalAwsEndpoint>> exposes, Output<List<String>> subnetIds) {
 
         this.namingStrategy = namingStrategy;
 
         securityGroup = new SecurityGroup(namingStrategy.generateName(getName()));
 
-        loadBalancer = new LoadBalancer(namingStrategy.generateName(getName()), LoadBalancerArgs.builder().loadBalancerType("network")
-                .securityGroups(securityGroup.id().applyValue(List::of)).build());
+        loadBalancer = new LoadBalancer(namingStrategy.generateName(getName()),
+                LoadBalancerArgs.builder()
+                        .loadBalancerType("network")
+                        .securityGroups(securityGroup.id().applyValue(List::of))
+                        .subnets(subnetIds)
+                        .build());
 
         addAllExposedEndpointsToTheNlb(exposes);
     }

@@ -10,8 +10,6 @@ import lombok.Getter;
 
 public class DataStackOutputs {
 
-    private final String CONTEXT_KEY = "outputs";
-
     @Getter
     private final ReferencedAwsEndpoint postgresEndpoint;
 

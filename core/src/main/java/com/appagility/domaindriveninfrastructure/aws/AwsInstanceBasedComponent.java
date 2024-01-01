@@ -12,7 +12,6 @@ import com.pulumi.aws.autoscaling.inputs.GroupLaunchTemplateArgs;
 import com.pulumi.aws.ec2.LaunchTemplate;
 import com.pulumi.aws.ec2.LaunchTemplateArgs;
 import com.pulumi.aws.ec2.SecurityGroup;
-import com.pulumi.aws.ec2.outputs.GetSubnetsResult;
 import com.pulumi.core.Output;
 import lombok.Builder;
 import lombok.NonNull;
@@ -56,9 +55,8 @@ public class AwsInstanceBasedComponent extends InstanceBasedComponent<
     }
 
     @Override
-    public void defineInfrastructure(Output<GetSubnetsResult> subnets) {
+    public void defineInfrastructure(Output<List<String>> subnetIds) {
 
-        var subnetIds = subnets.applyValue(GetSubnetsResult::ids);
 
         var launchTemplate = new LaunchTemplate(namingStrategy.generateName(shortCode),
                 LaunchTemplateArgs.builder()
